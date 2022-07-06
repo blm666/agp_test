@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'myplugin.greeting'//这里的id是plugin的id，而不是dependencies里面classpath的名字
+apply plugin: 'myplugin.helloworld'
+buildscript {
+    dependencies {
+        classpath 'com.myexample.plugin:hello:0.0.2'//注意这里有两个冒号，形式为GROUPID:ARTIFACTID:VERSION
+    }
+    repositories {
+        maven {
+            // $rootProject 表示项目的根目录
+            url = "$rootDir/repo"
+        }
+    }
+}
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+    defaultConfig {
+        applicationId "com.example.ndktest"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path file('src/main/cpp/Android.mk')
+        }
+    }
+
+}
